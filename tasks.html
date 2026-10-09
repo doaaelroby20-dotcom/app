@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مَهامّي – إدارة المشاريع والمهام</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#f1f4f3;--cd:#fff;--tx:#12303a;--mu:#62767b;--pr:#0f766e;--ps:#e0f0ed;--bd:#dde6e4;--ok:#16a34a;--er:#dc2626;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1a1e;--cd:#14262c;--tx:#e6f0ee;--mu:#93a9ad;--ps:#1d3a40;--bd:#26434a;--pr:#2dd4bf}}
+:root[data-theme=dark]{--bg:#0d1a1e;--cd:#14262c;--tx:#e6f0ee;--mu:#93a9ad;--ps:#1d3a40;--bd:#26434a;--pr:#2dd4bf}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 Tahoma,"Segoe UI",system-ui,sans-serif}
+.app{display:flex;min-height:100vh}
+aside{width:220px;background:var(--cd);border-inline-end:1px solid var(--bd);padding:18px 12px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px}
+.logo{font-size:21px;font-weight:700;color:var(--pr);padding:4px 10px 14px}
+aside a{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;color:var(--mu);cursor:pointer}
+aside a.on{background:var(--ps);color:var(--pr);font-weight:700}
+.bd{background:var(--er);color:#fff;border-radius:99px;font-size:11px;padding:0 6px;margin-inline-start:auto}
+main{flex:1;padding:24px;max-width:1100px;min-width:0}
+h1{font-size:22px;margin:0 0 16px}h2{font-size:17px;margin:22px 0 10px;display:flex;justify-content:space-between;align-items:center}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.st b{font-size:26px;display:block}
+.bar{width:100%;height:8px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pr);border-radius:9px}
+.pill{font-size:12px;padding:2px 10px;border-radius:99px;background:var(--ps);color:var(--pr);white-space:nowrap}
+.s-done,.pr-low{background:#dcfce7;color:#166534}.s-late,.pr-high{background:#fee2e2;color:#991b1b}.s-run,.pr-med{background:#fef3c7;color:#92400e}.s-new{background:#e2e8f0;color:#334155}
+.b,.b2{border:0;border-radius:10px;padding:9px 16px;cursor:pointer;font:inherit}
+.b{background:var(--pr);color:#fff}.b2{background:var(--ps);color:var(--pr)}.b.d{background:var(--er);color:#fff}
+:root[data-theme=dark] .b,:root:not([data-theme=light]) .b{color:#fff}
+.w{width:100%;margin-top:8px}
+.av{display:inline-grid;place-items:center;border-radius:50%;color:#fff;font-weight:700;flex:none}
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--cd);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;cursor:pointer;flex-wrap:wrap}.row.lt{border-color:var(--er)}
+.fx{flex:1;min-width:140px}small{color:var(--mu);display:block}.dn{text-decoration:line-through;color:var(--mu)}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:8px 10px;width:100%}
+input[type=checkbox]{width:auto}.row select{width:auto}
+.tb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tb input{flex:2;min-width:150px}.tb select{flex:1;min-width:110px;width:auto}
+.hd{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.empty{text-align:center;color:var(--mu);padding:30px}
+.ov{position:fixed;inset:0;background:#0008;display:grid;place-items:center;padding:14px;z-index:50}
+.mod{background:var(--cd);border-radius:16px;padding:20px;width:100%;max-width:520px;max-height:90vh;overflow:auto}
+.mod label{display:block;margin-bottom:10px;font-size:13px;color:var(--mu)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.acts{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.ck{display:flex;flex-wrap:wrap;gap:8px}.mod .ck label{display:flex;gap:6px;align-items:center;margin:0;color:var(--tx)}
+#ts{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:99}
+.toast{background:var(--ok);color:#fff;padding:10px 18px;border-radius:10px;margin-bottom:8px}.toast.er{background:var(--er)}
+.chat{display:grid;grid-template-columns:280px 1fr;gap:14px;height:68vh}.cl{overflow:auto}.cv{display:flex;flex-direction:column}
+.mi{display:flex;gap:10px;align-items:center;padding:8px;border-radius:10px;cursor:pointer}.mi.on,.mi:hover{background:var(--ps)}
+#ms{flex:1;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.msg{max-width:75%;background:var(--ps);padding:7px 12px;border-radius:12px;align-self:flex-start}.msg.me{background:var(--pr);color:#fff;align-self:flex-end}.msg small{color:inherit;opacity:.7;font-size:10px}
+.cin{display:flex;gap:8px;align-items:center}.cin input{flex:1}
+.bk{display:none}
+@media(max-width:800px){.app{display:block}aside{position:fixed;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;flex-direction:row;overflow-x:auto;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:40;border-top:1px solid var(--bd);border-inline-end:0}.logo{display:none}aside a{flex-direction:column;gap:0;font-size:11px;padding:6px 10px;white-space:nowrap}main{padding:16px 14px 100px}.chat{grid-template-columns:1fr}.chat.open .cl,.chat:not(.open) .cv{display:none}.bk{display:inline-block}}
+</style></head><body>
+<div id="app" class="app"></div><div id="md"></div><div id="ts"></div>
+<script>
+const $=s=>document.querySelector(s);
+const iso=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const TS=iso(0);
+const seed=()=>({theme:'',chat:{m1:[{t:'صباح الخير، أرسلت لك التصاميم النهائية.',time:'09:15'},{me:1,t:'ممتاز، شكراً سارة!',time:'09:20'}],m2:[{t:'سلة المشتريات تحتاج يومين إضافيين.',time:'10:05'}]},
+notifs:[{x:'تم إسناد مهمة «ربط بوابة الدفع» إليك',ic:'🆕',time:'اليوم 08:30',r:0},{x:'سارة العلي أرسلت لك رسالة',ic:'💬',time:'اليوم 09:15',r:0},{x:'تم تحديث مشروع «تطبيق الجوال»',ic:'📁',time:'أمس',r:1}],
+members:[['m0','أحمد المنصور','مدير منتج','#0f766e'],['m1','سارة العلي','مصممة UI/UX','#db2777'],['m2','خالد حسن','مطور واجهات','#0891b2'],['m3','ليلى إبراهيم','مطورة خلفية','#65a30d'],['m4','عمر يوسف','مختبر جودة','#d97706'],['m5','نور الدين','مسؤول تسويق','#7c3aed']].map(([id,name,role,color])=>({id,name,role,color,email:id=='m0'?'ahmed@mahamy.app':''})),
+projects:[{id:'p1',name:'إطلاق المتجر الإلكتروني',desc:'بناء وإطلاق متجر إلكتروني متكامل مع بوابة دفع.',m:'m0',mem:['m0','m1','m2','m3','m4'],s:iso(-40),e:iso(20)},
+{id:'p2',name:'حملة التسويق الرقمي',desc:'حملة إعلانية على وسائل التواصل لزيادة المبيعات.',m:'m5',mem:['m5','m1','m0'],s:iso(-25),e:iso(10)},
+{id:'p3',name:'تطبيق الجوال',desc:'تطوير تطبيق جوال للعملاء على أندرويد وiOS.',m:'m2',mem:['m2','m3','m4','m0','m1'],s:iso(-10),e:iso(45)}],
+tasks:[['t1','تصميم واجهة الصفحة الرئيسية','p1','m1','high',-38,-20,'done'],['t2','إعداد قاعدة البيانات','p1','m3','med',-35,-22,'done'],['t3','بناء سلة المشتريات','p1','m2','high',-20,-2,'prog'],['t4','ربط بوابة الدفع','p1','m3','high',-10,7,'prog'],['t5','كتابة وصف المنتجات','p1','m0','low',-5,5,'todo'],['t6','اختبار تجربة المستخدم','p1','m4','med',3,12,'todo'],
+['t7','وضع خطة المحتوى','p2','m5','med',-25,-15,'done'],['t8','تصميم الإعلانات','p2','m1','high',-20,-8,'done'],['t9','جدولة المنشورات','p2','m5','low',-12,-3,'done'],['t10','تحليل نتائج الحملة','p2','m0','med',-2,10,'prog'],
+['t11','تحليل المتطلبات','p3','m0','high',-10,-5,'done'],['t12','تصميم الشاشات','p3','m1','high',-6,4,'prog'],['t13','إنشاء واجهات API','p3','m3','high',-5,-1,'todo'],['t14','واجهة تسجيل الدخول','p3','m2','med',0,14,'todo'],['t15','اختبار الأداء','p3','m4','low',20,40,'todo']].map(([id,t,p,a,pr,s,e,st])=>({id,t,d:'',p,a,pr,s:iso(s),e:iso(e),st,notes:[],files:[]}))});
+let S;try{S=JSON.parse(localStorage.getItem('mh'))}catch(e){}S=S||seed();
+const save=()=>{try{localStorage.setItem('mh',JSON.stringify(S))}catch(e){}};
+const PS={new:'لم يبدأ',run:'قيد التنفيذ',done:'مكتمل',late:'متأخر'},TL={todo:'To Do',prog:'In Progress',done:'Completed'},PR={low:'منخفضة',med:'متوسطة',high:'عالية'};
+const Q={pq:'',ps:'all',tq:'',ts:'all',ta:'all',so:'due'};let LIST;
+const rl=()=>{const e=$('#list');if(e)e.innerHTML=LIST()};
+const M=id=>S.members.find(m=>m.id==id)||{name:'—',color:'#999',role:''},P=id=>S.projects.find(p=>p.id==id),T=id=>S.tasks.find(t=>t.id==id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fd=d=>new Date(d+'T00:00').toLocaleDateString('ar-EG',{day:'numeric',month:'short'});
+const hm=()=>new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+const av=(m,s=36)=>`<span class="av" style="background:${m.color};width:${s}px;height:${s}px;font-size:${s/2.3}px">${esc(m.name[0])}</span>`;
+const bar=p=>`<div class="bar"><i style="width:${p}%"></i></div>`;
+const emp=m=>`<div class="empty">📭<br>${m}</div>`;
+const opt=(a,v)=>a.map(([k,l])=>`<option value="${k}" ${k==v?'selected':''}>${esc(l)}</option>`).join('');
+const inp=(l,n,v='',t='text',x='')=>`<label>${l}<input name="${n}" type="${t}" value="${esc(v)}" ${x}></label>`;
+const pt=p=>S.tasks.filter(t=>t.p==p.id);
+const prog=p=>{const a=pt(p);return a.length?Math.round(a.filter(t=>t.st=='done').length/a.length*100):0};
+const late=t=>t.st!='done'&&t.e<TS;
+const pstat=p=>{const a=pt(p);if(a.length&&prog(p)==100)return'done';if(a.some(late)||p.e<TS)return'late';return a.some(t=>t.st!='todo')?'run':'new'};
+const go=h=>{location.hash='#/'+h};
+const nt=(x,ic='🔔')=>{S.notifs.unshift({x,ic,time:'اليوم '+hm(),r:0});if(S.notifs.length>40)S.notifs.pop();save()};
+function toast(m,t=''){const e=document.createElement('div');e.className='toast '+t;e.textContent=m;$('#ts').append(e);setTimeout(()=>e.remove(),2600)}
+const cm=()=>{$('#md').innerHTML=''};
+function modal(title,body,ok,okText='حفظ'){$('#md').innerHTML=`<div class="ov" onclick="if(event.target==this)cm()"><form class="mod"><h3 style="margin-top:0">${title}</h3>${body}<div class="acts"><button type="button" class="b2" onclick="cm()">إلغاء</button><button class="b ${okText=='حذف'?'d':''}">${okText}</button></div></form></div>`;const f=$('#md form');f.onsubmit=e=>{e.preventDefault();ok(new FormData(f))}}
+const ask=(m,fn)=>modal('تأكيد الحذف',`<p>${m}</p>`,()=>{cm();fn()},'حذف');
+const done=m=>{save();cm();toast(m);render()};
+const fa=v=>{$('#as').innerHTML=opt((P(v)?.mem||[]).map(i=>[i,M(i).name]),'')};
+
+const trow=t=>{const l=late(t);return `<div class="row ${l?'lt':''}" onclick="go('task/${t.id}')"><input type="checkbox" ${t.st=='done'?'checked':''} onclick="event.stopPropagation();tg('${t.id}')"><div class="fx"><b class="${t.st=='done'?'dn':''}">${esc(t.t)}</b><small>${esc(P(t.p)?.name)} – ${fd(t.e)}${l?' – متأخرة':''}</small></div>${av(M(t.a),28)}<span class="pill pr-${t.pr}">${PR[t.pr]}</span><select onclick="event.stopPropagation()" onchange="setSt('${t.id}',this.value)">${opt(Object.entries(TL),t.st)}</select></div>`};
+const pcard=p=>{const s=pstat(p),g=prog(p);return `<div class="card" style="cursor:pointer" onclick="go('project/${p.id}')"><div class="hd"><b class="fx">${esc(p.name)}</b><span class="pill s-${s}">${PS[s]}</span></div><small>${esc(p.desc)}</small><small style="margin:8px 0">المدير: ${esc(M(p.m).name)} – ${fd(p.s)} إلى ${fd(p.e)}</small><div style="display:flex;gap:4px">${p.mem.slice(0,6).map(i=>av(M(i),26)).join('')}</div><div class="hd" style="margin:12px 0 0">${bar(g)}<b>${g}%</b></div><div class="tb" style="margin:10px 0 0"><button class="b2" onclick="event.stopPropagation();projForm('${p.id}')">تعديل</button><button class="b2" onclick="event.stopPropagation();delP('${p.id}')">حذف</button></div></div>`};
+
+function home(){const a=S.tasks,D=a.filter(x=>x.st=='done').length,pc=a.length?Math.round(D/a.length*100):0,L=a.filter(late).length,up=a.filter(x=>x.st!='done').sort((x,y)=>x.e<y.e?-1:1).slice(0,5);
+return `<h1>مرحباً، ${esc(M('m0').name.split(' ')[0])} 👋</h1><p style="color:var(--mu);margin-top:-10px">ملخص مشاريعك ومهامك اليوم.</p>
+${L?`<div class="card" style="border-color:var(--er);margin-bottom:14px;cursor:pointer" onclick="Q.ts='late';go('tasks')">⚠️ لديك <b>${L}</b> مهام متأخرة. اضغط للمراجعة</div>`:''}
+<div class="tb"><button class="b" onclick="projForm()">+ مشروع جديد</button><button class="b2" onclick="taskForm()">+ مهمة جديدة</button></div>
+<div class="st"><div class="card"><small>المشاريع النشطة</small><b>${S.projects.filter(p=>pstat(p)!='done').length}</b></div><div class="card"><small>مهام مكتملة</small><b>${D}</b></div><div class="card"><small>مهام متبقية</small><b>${a.length-D}</b></div><div class="card"><small>نسبة الإنجاز الإجمالية</small><b>${pc}%</b>${bar(pc)}</div></div>
+<h2>المشاريع <button class="b2" onclick="go('projects')">عرض الكل</button></h2><div class="grid">${S.projects.slice(0,3).map(pcard).join('')||emp('لا توجد مشاريع. ابدأ بإنشاء مشروع')}</div>
+<h2>المهام القادمة</h2>${up.map(trow).join('')||emp('لا توجد مهام قادمة')}
+<h2>التواصل</h2><div class="card"><div class="ck">${S.members.filter(m=>m.id!='m0').map(m=>`<span class="pill" style="cursor:pointer;display:flex;gap:6px;align-items:center" onclick="go('chat/${m.id}')">${av(m,22)}${esc(m.name)} 💬</span>`).join('')}</div></div>`}
+
+function projects(){LIST=()=>{const q=Q.pq.trim(),a=S.projects.filter(p=>(Q.ps=='all'||pstat(p)==Q.ps)&&(p.name+p.desc).includes(q));return a.length?`<div class="grid">${a.map(pcard).join('')}</div>`:emp('لا توجد مشاريع مطابقة')};
+return `<h1>المشاريع</h1><div class="tb"><input placeholder="🔍 ابحث عن مشروع" value="${esc(Q.pq)}" oninput="Q.pq=this.value;rl()"><select onchange="Q.ps=this.value;rl()">${opt([['all','كل الحالات'],...Object.entries(PS)],Q.ps)}</select><button class="b" onclick="projForm()">+ مشروع جديد</button></div><div id="list">${LIST()}</div>`}
+
+function project(id){const p=P(id);if(!p)return emp('المشروع غير موجود');const a=pt(p),g=prog(p),s=pstat(p),L=a.filter(late),R=a.filter(x=>x.st!='done'&&!late(x)),D=a.filter(x=>x.st=='done');
+const sec=(h,l)=>l.length?`<h2>${h} (${l.length})</h2>${l.map(trow).join('')}`:'';
+return `<div class="hd"><button class="b2" onclick="go('projects')">رجوع</button><h1 class="fx" style="margin:0">${esc(p.name)}</h1><span class="pill s-${s}">${PS[s]}</span></div><p>${esc(p.desc)}</p>
+<div class="card"><div class="hd"><b class="fx">نسبة الإنجاز</b><b>${g}%</b></div><div class="bar" style="height:14px"><i style="width:${g}%"></i></div></div>
+<div class="st" style="margin:14px 0"><div class="card"><small>البداية</small><b style="font-size:16px">${fd(p.s)}</b></div><div class="card"><small>الموعد النهائي</small><b style="font-size:16px">${fd(p.e)}</b></div><div class="card"><small>مدير المشروع</small><b style="font-size:16px">${esc(M(p.m).name)}</b></div><div class="card"><small>مكتملة / متبقية / متأخرة</small><b style="font-size:20px">${D.length} / ${R.length+L.length} / ${L.length}</b></div></div>
+<div class="card"><b>أعضاء الفريق</b><div class="ck" style="margin-top:8px">${p.mem.map(i=>`<span class="pill" style="display:flex;gap:6px;align-items:center">${av(M(i),22)}${esc(M(i).name)} – ${esc(M(i).role)}</span>`).join('')}</div></div>
+<div class="tb" style="margin-top:14px"><button class="b" onclick="taskForm('','${p.id}')">+ مهمة جديدة</button><button class="b2" onclick="projForm('${p.id}')">تعديل وإضافة أعضاء</button><button class="b2" onclick="delP('${p.id}')">حذف المشروع</button></div>
+${a.length?sec('⚠️ المهام المتأخرة',L)+sec('المهام المتبقية',R)+sec('المهام المكتملة',D):emp('لا توجد مهام في هذا المشروع بعد')}`}
+
+function tasks(){LIST=()=>{const q=Q.tq.trim(),o={high:0,med:1,low:2};const a=S.tasks.filter(t=>(Q.ts=='all'||(Q.ts=='late'?late(t):t.st==Q.ts))&&(Q.ta=='all'||t.a==Q.ta)&&(t.t+t.d).includes(q)).sort((x,y)=>Q.so=='pr'?o[x.pr]-o[y.pr]:x.e<y.e?-1:1);return a.map(trow).join('')||emp('لا توجد مهام مطابقة')};
+return `<h1>المهام</h1><div class="tb"><input placeholder="🔍 ابحث عن مهمة" value="${esc(Q.tq)}" oninput="Q.tq=this.value;rl()"><select onchange="Q.ts=this.value;rl()">${opt([['all','كل الحالات'],['late','متأخرة'],...Object.entries(TL)],Q.ts)}</select><select onchange="Q.ta=this.value;rl()">${opt([['all','كل المسؤولين'],...S.members.map(m=>[m.id,m.name])],Q.ta)}</select><select onchange="Q.so=this.value;rl()">${opt([['due','الترتيب: الموعد'],['pr','الترتيب: الأولوية']],Q.so)}</select><button class="b" onclick="taskForm()">+ مهمة</button></div><div id="list">${LIST()}</div>`}
+
+function task(id){const t=T(id);if(!t)return emp('المهمة غير موجودة');const l=late(t);
+return `<div class="hd"><button class="b2" onclick="go('tasks')">رجوع</button><h1 class="fx" style="margin:0">${esc(t.t)}</h1><span class="pill pr-${t.pr}">${PR[t.pr]}</span></div>
+<div class="card"><p>${esc(t.d)||'<small>لا يوجد وصف</small>'}</p><div class="st"><div><small>المشروع</small><a style="color:var(--pr);cursor:pointer" onclick="go('project/${t.p}')">${esc(P(t.p)?.name)}</a></div><div><small>المسؤول</small>${esc(M(t.a).name)}</div><div><small>البداية</small>${fd(t.s)}</div><div><small>الموعد النهائي</small>${fd(t.e)}${l?' ⚠️ متأخرة':''}</div></div>
+<div class="tb" style="margin:14px 0 0">${Object.entries(TL).map(([k,v])=>`<button class="${t.st==k?'b':'b2'}" onclick="setSt('${t.id}','${k}')">${v}</button>`).join('')}<button class="b2" onclick="taskForm('${t.id}')">تعديل</button><button class="b2" onclick="delT('${t.id}')">حذف</button></div></div>
+<h2>الملاحظات</h2><div class="card">${t.notes.map(n=>`<p style="margin:0 0 8px">📝 ${esc(n.x)} <small>${n.time}</small></p>`).join('')||'<small>لا توجد ملاحظات</small>'}<div class="cin" style="margin-top:8px"><input id="nn" placeholder="أضف ملاحظة..."><button class="b" onclick="addN('${t.id}')">إضافة</button></div></div>
+<h2>الملفات</h2><div class="card">${t.files.map(f=>`<p style="margin:0 0 6px">📎 ${esc(f)}</p>`).join('')||'<small>لا توجد ملفات</small>'}<label class="b2" style="display:inline-block;margin-top:8px;cursor:pointer">+ رفع ملف<input type="file" hidden onchange="addF('${t.id}',this)"></label></div>`}
+function addN(id){const v=$('#nn').value.trim();if(!v)return;const t=T(id);t.notes.push({x:v,time:hm()});nt(`تمت إضافة ملاحظة على «${t.t}»`,'📝');done('تمت إضافة الملاحظة')}
+function addF(id,i){const f=i.files[0];if(!f)return;const t=T(id);t.files.push(f.name);nt(`تم إرفاق ملف بالمهمة «${t.t}»`,'📎');done('تم رفع الملف')}
+function setSt(id,st){const t=T(id);t.st=st;nt(`تم تغيير حالة «${t.t}» إلى ${TL[st]}`,'🔄');done('تم تحديث حالة المهمة')}
+const tg=id=>setSt(id,T(id).st=='done'?'todo':'done');
+
+function projForm(id){const e=P(id),p=e||{name:'',desc:'',m:'m0',mem:['m0'],s:TS,e:iso(30)};
+modal(e?'تعديل المشروع':'مشروع جديد',inp('اسم المشروع','name',p.name,'text','required')+`<label>الوصف<textarea name="desc" rows="2">${esc(p.desc)}</textarea></label><label>مدير المشروع<select name="m">${opt(S.members.map(m=>[m.id,m.name]),p.m)}</select></label><div class="g2">${inp('تاريخ البداية','s',p.s,'date','required')}${inp('الموعد النهائي','e',p.e,'date','required')}</div><label>أعضاء الفريق</label><div class="ck">${S.members.map(m=>`<label><input type="checkbox" name="mem" value="${m.id}" ${p.mem.includes(m.id)?'checked':''}>${esc(m.name)}</label>`).join('')}</div>`,fd=>{
+const d={name:fd.get('name').trim(),desc:fd.get('desc'),m:fd.get('m'),s:fd.get('s'),e:fd.get('e'),mem:[...new Set([fd.get('m'),...fd.getAll('mem')])]};
+if(d.e<d.s)return toast('الموعد النهائي يسبق تاريخ البداية','er');
+const nid=e?e.id:'p'+Date.now();if(e)Object.assign(e,d);else S.projects.push({id:nid,...d});
+nt(`${e?'تم تحديث':'تم إنشاء'} المشروع «${d.name}»`,'📁');done(e?'تم تعديل المشروع بنجاح':'تم إنشاء المشروع بنجاح');if(!e)go('project/'+nid)})}
+function taskForm(id,pid){if(!S.projects.length)return toast('أنشئ مشروعاً أولاً','er');const e=T(id),t=e||{t:'',d:'',p:pid||S.projects[0].id,a:'',pr:'med',s:TS,e:iso(7),st:'todo'};
+modal(e?'تعديل المهمة':'مهمة جديدة',inp('اسم المهمة','t',t.t,'text','required')+`<label>الوصف<textarea name="d" rows="2">${esc(t.d)}</textarea></label><div class="g2"><label>المشروع<select name="p" onchange="fa(this.value)">${opt(S.projects.map(p=>[p.id,p.name]),t.p)}</select></label><label>المسؤول<select name="a" id="as">${opt((P(t.p)?.mem||[]).map(i=>[i,M(i).name]),t.a)}</select></label><label>الأولوية<select name="pr">${opt(Object.entries(PR),t.pr)}</select></label><label>الحالة<select name="st">${opt(Object.entries(TL),t.st)}</select></label>${inp('تاريخ البداية','s',t.s,'date','required')}${inp('الموعد النهائي','e',t.e,'date','required')}</div>`,fd=>{
+const d={t:fd.get('t').trim(),d:fd.get('d'),p:fd.get('p'),a:fd.get('a'),pr:fd.get('pr'),st:fd.get('st'),s:fd.get('s'),e:fd.get('e')};
+if(d.e<d.s)return toast('الموعد النهائي يسبق تاريخ البداية','er');
+if(e)Object.assign(e,d);else S.tasks.push({id:'t'+Date.now(),...d,notes:[],files:[]});
+nt(`${e?'تم تعديل':'تمت إضافة'} المهمة «${d.t}» وإسنادها إلى ${M(d.a).name}`,'🆕');done(e?'تم تعديل المهمة بنجاح':'تمت إضافة المهمة بنجاح')})}
+function delP(id){const p=P(id);ask(`هل تريد حذف المشروع «${esc(p.name)}» وجميع مهامه؟`,()=>{S.tasks=S.tasks.filter(t=>t.p!=id);S.projects=S.projects.filter(x=>x.id!=id);nt(`تم حذف المشروع «${p.name}»`,'🗑️');save();toast('تم حذف المشروع');go('projects');render()})}
+function delT(id){const t=T(id);ask(`هل تريد حذف المهمة «${esc(t.t)}»؟`,()=>{S.tasks=S.tasks.filter(x=>x.id!=id);nt(`تم حذف المهمة «${t.t}»`,'🗑️');save();toast('تم حذف المهمة');go('tasks');render()})}
+
+const RP=['تمام، سأتابع الأمر.','شكراً لك، تم الاستلام 👍','سأرد عليك خلال ساعة.','ممتاز، لنناقشه في الاجتماع.'];
+const msgs=id=>(S.chat[id]||[]).map(m=>`<div class="msg ${m.me?'me':''}">${m.f?'📎 '+esc(m.f):esc(m.t)}<small>${m.time}</small></div>`).join('')||'<div class="empty">ابدأ المحادثة</div>';
+function chat(id){const ms=S.members.filter(m=>m.id!='m0'),c=id&&S.members.find(m=>m.id==id);
+return `<h1>التواصل</h1><div class="chat ${c?'open':''}"><div class="cl card">${ms.map(m=>{const l=(S.chat[m.id]||[]).slice(-1)[0];return `<div class="mi ${m.id==id?'on':''}" onclick="go('chat/${m.id}')">${av(m,40)}<div class="fx"><b>${esc(m.name)}</b><small>${esc(m.role)}</small>${l?`<small>${esc(l.f?'📎 '+l.f:l.t)}</small>`:''}</div></div>`}).join('')}<button class="b2 w" onclick="addMember()">+ عضو جديد</button></div><div class="cv card">${c?`<div class="hd"><button class="b2 bk" onclick="go('chat')">رجوع</button>${av(c,40)}<div><b>${esc(c.name)}</b><small>${esc(c.role)}</small></div></div><div id="ms">${msgs(id)}</div><div class="cin"><label class="b2" style="cursor:pointer">📎<input type="file" hidden onchange="sendF('${id}',this)"></label><input id="ci" placeholder="اكتب رسالة..." onkeydown="if(event.key=='Enter')send('${id}')"><button class="b" onclick="send('${id}')">إرسال</button></div>`:'<div class="empty">💬<br>اختر عضواً لبدء المحادثة</div>'}</div></div>`}
+function push(id,m){(S.chat[id]=S.chat[id]||[]).push({...m,time:hm()});save();const el=$('#ms');if(el&&location.hash=='#/chat/'+id){el.innerHTML=msgs(id);el.scrollTop=el.scrollHeight}}
+function reply(id){setTimeout(()=>{push(id,{t:RP[Math.random()*RP.length|0]});nt('رسالة جديدة من '+M(id).name,'💬');if(location.hash!='#/chat/'+id){toast('💬 رسالة جديدة من '+M(id).name);if(!location.hash.startsWith('#/chat'))render()}},1500)}
+function send(id){const i=$('#ci'),v=i.value.trim();if(!v)return;i.value='';push(id,{me:1,t:v});reply(id)}
+function sendF(id,i){const f=i.files[0];if(!f)return;push(id,{me:1,f:f.name});toast('تم إرسال الملف');reply(id)}
+function addMember(){modal('عضو جديد',inp('الاسم','n','','text','required')+inp('الوظيفة','r','','text','required'),fd=>{const cs=['#be123c','#1d4ed8','#b45309','#047857'];S.members.push({id:'m'+Date.now(),name:fd.get('n').trim(),role:fd.get('r').trim(),color:cs[S.members.length%4],email:''});nt(`انضم ${fd.get('n')} إلى الفريق`,'👥');done('تمت إضافة العضو')})}
+
+function perf(){const a=S.tasks,n=a.length||1,L=a.filter(late).length,D=a.filter(t=>t.st=='done').length,R=a.filter(t=>t.st=='prog'&&!late(t)).length,Z=a.length-L-D-R,C=251.3;let o=0;
+const sg=[[D,'#16a34a','مكتملة'],[R,'#0f766e','قيد التنفيذ'],[Z,'#94a3b8','To Do'],[L,'#dc2626','متأخرة']];
+const arcs=sg.map(([v,c])=>{const l=v/n*C,s=`<circle r="40" cx="60" cy="60" fill="none" stroke="${c}" stroke-width="16" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-o}" transform="rotate(-90 60 60)"/>`;o+=l;return s}).join('');
+const sc=Math.round(D/n*70+(1-L/n)*30),lb=sc>=75?'ممتاز':sc>=50?'جيد':'يحتاج تحسين';
+return `<h1>أداء المهام والفريق</h1><div class="grid"><div class="card"><div class="hd"><svg width="130" height="130" viewBox="0 0 120 120">${arcs}<text x="60" y="66" text-anchor="middle" font-size="20" font-weight="700" fill="currentColor">${sc}</text></svg><div>${sg.map(([v,c,l])=>`<div><span class="av" style="background:${c};width:10px;height:10px"></span> ${l}: <b>${Math.round(v/n*100)}%</b></div>`).join('')}</div></div></div><div class="card"><small>المؤشر العام لأداء الفريق</small><b style="font-size:30px;display:block">${sc}/100 – ${lb}</b>${bar(sc)}</div></div>
+<h2>أداء الأعضاء</h2>${S.members.map(m=>{const t=a.filter(x=>x.a==m.id),d=t.filter(x=>x.st=='done').length,r=t.length?Math.round(d/t.length*100):0;return `<div class="row" style="cursor:default">${av(m,32)}<div class="fx"><b>${esc(m.name)}</b><small>${t.length} مهام – ${d} مكتملة</small></div><div style="width:40%;min-width:120px">${bar(r)}</div><b>${r}%</b></div>`}).join('')}
+<h2>تقدم المشاريع</h2><div class="card">${S.projects.map(p=>{const g=prog(p),s=pstat(p);return `<div style="margin-bottom:12px"><div class="hd"><b class="fx">${esc(p.name)}</b><span class="pill s-${s}">${PS[s]}</span><b>${g}%</b></div>${bar(g)}</div>`}).join('')||emp('لا توجد مشاريع')}</div>`}
+
+function notifs(){const a=S.tasks.filter(x=>x.st!='done'),dyn=[...a.filter(late).map(t=>['⏰',`المهمة «${t.t}» متأخرة`,t,1]),...a.filter(t=>!late(t)&&t.e<=iso(3)).map(t=>['🔔',`اقترب موعد المهمة «${t.t}»`,t,0])];
+return `<h1>الإشعارات</h1>${dyn.map(([i,x,t,l])=>`<div class="row ${l?'lt':''}" onclick="go('task/${t.id}')"><span>${i}</span><div class="fx">${esc(x)}<small>تنبيه تلقائي – الموعد ${fd(t.e)}</small></div></div>`).join('')}${S.notifs.map(n=>`<div class="row" style="cursor:default;${n.r?'':'background:var(--ps)'}"><span>${n.ic}</span><div class="fx">${esc(n.x)}<small>${n.time}</small></div></div>`).join('')}${dyn.length+S.notifs.length?'':emp('لا توجد إشعارات جديدة')}`}
+
+function profile(){const u=M('m0'),ps=S.projects.filter(p=>p.mem.includes('m0')),ts=S.tasks.filter(t=>t.a=='m0');
+return `<h1>الملف الشخصي</h1><div class="card"><div class="hd">${av(u,64)}<div><b style="font-size:18px">${esc(u.name)}</b><small>${esc(u.role)} – ${esc(u.email)}</small></div></div></div>
+<h2>المشاريع التي أعمل عليها</h2><div class="grid">${ps.map(pcard).join('')||emp('لا توجد مشاريع')}</div><h2>المهام المسندة إليّ</h2>${ts.map(trow).join('')||emp('لا توجد مهام')}
+<h2>إعدادات الحساب</h2><div class="card mod" style="max-width:none"><div class="g2"><label>الاسم<input id="un" value="${esc(u.name)}"></label><label>الوظيفة<input id="ur" value="${esc(u.role)}"></label><label>البريد الإلكتروني<input id="ue" type="email" value="${esc(u.email)}"></label><label>المظهر<select onchange="S.theme=this.value;save();applyTheme()">${opt([['','تلقائي'],['light','فاتح'],['dark','داكن']],S.theme)}</select></label></div><div class="tb" style="margin:0"><button class="b" onclick="saveProf()">حفظ التغييرات</button><button class="b2" onclick="resetAll()">استعادة البيانات التجريبية</button></div></div>`}
+function saveProf(){const u=M('m0');u.name=$('#un').value.trim()||u.name;u.role=$('#ur').value.trim();u.email=$('#ue').value.trim();done('تم حفظ إعدادات الحساب')}
+const resetAll=()=>ask('سيتم حذف بياناتك الحالية واستبدالها بالبيانات التجريبية. هل تريد المتابعة؟',()=>{S=seed();save();applyTheme();toast('تمت استعادة البيانات التجريبية');go('home');render()});
+const applyTheme=()=>{document.documentElement.dataset.theme=S.theme||''};
+
+const NAV=[['home','🏠','الرئيسية'],['projects','📁','المشاريع'],['tasks','✅','المهام'],['chat','💬','التواصل'],['perf','📊','الأداء'],['notifs','🔔','الإشعارات'],['profile','👤','حسابي']];
+const PG={home,projects,project,tasks,task,chat,perf,notifs,profile};
+function render(){const [r='home',id]=(location.hash.slice(2)||'home').split('/'),pg=PG[r]||home,act={project:'projects',task:'tasks'}[r]||r,un=S.notifs.filter(n=>!n.r).length;
+$('#app').innerHTML=`<aside><div class="logo">✓ مَهامّي</div>${NAV.map(([k,i,l])=>`<a class="${k==act?'on':''}" onclick="go('${k}')">${i}<span>${l}</span>${k=='notifs'&&un?`<span class="bd">${un}</span>`:''}</a>`).join('')}</aside><main>${pg(id)}</main>`;
+if(r=='notifs'){S.notifs.forEach(n=>n.r=1);save()}
+const m=$('#ms');if(m)m.scrollTop=m.scrollHeight;window.scrollTo(0,0)}
+window.onhashchange=render;applyTheme();render();
+</script></body></html>

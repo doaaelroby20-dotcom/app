@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StudyNova - تنظيم المذاكرة والامتحانات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1d2340;--mu:#6b7194;--pr:#5b5bd6;--pr2:#e9e9fb;--bd:#e3e6f2;--ok:#16a34a;--wa:#d97706;--er:#dc2626;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12142a;--card:#1c1f3a;--tx:#eceefb;--mu:#9aa0c8;--pr:#8b8bf5;--pr2:#2a2d55;--bd:#2c3058}}
+:root[data-theme="dark"]{--bg:#12142a;--card:#1c1f3a;--tx:#eceefb;--mu:#9aa0c8;--pr:#8b8bf5;--pr2:#2a2d55;--bd:#2c3058}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--tx);font-family:Cairo,Tahoma,sans-serif;font-size:15px}
+#app{display:flex;min-height:100vh}
+nav{background:var(--card);border-inline-end:1px solid var(--bd);width:210px;padding:16px 10px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px}
+nav h1{font-size:20px;color:var(--pr);margin:0 8px 14px}
+nav button{display:flex;gap:10px;align-items:center;background:none;border:0;color:var(--tx);padding:10px 12px;border-radius:10px;font:inherit;cursor:pointer;text-align:start}
+nav button.on{background:var(--pr2);color:var(--pr);font-weight:700}
+main{flex:1;padding:20px;max-width:1000px;margin:0 auto;width:100%;min-width:0}
+h2{margin:0 0 14px;font-size:22px}h3{margin:0 0 8px;font-size:16px}
+.g{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
+.big{font-size:26px;font-weight:700;color:var(--pr)}.mu{color:var(--mu);font-size:13px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}
+.btn{background:var(--pr);color:#fff;border:0;border-radius:10px;padding:8px 14px;font:inherit;cursor:pointer}
+.btn.s{background:var(--pr2);color:var(--pr)}.btn.d{background:#fde8e8;color:var(--er)}.btn.sm{padding:4px 10px;font-size:13px}
+.bar{background:var(--pr2);border-radius:99px;height:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pr);border-radius:99px}
+.tag{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--pr2);color:var(--pr)}
+.tag.ok{background:#dcfce7;color:var(--ok)}.tag.wa{background:#fef3c7;color:var(--wa)}.tag.er{background:#fee2e2;color:var(--er)}.tag.demo{background:#fce7f3;color:#be185d}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.empty{text-align:center;padding:30px;color:var(--mu)}.empty b{display:block;font-size:34px}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:8px;width:100%}
+label{display:block;margin-bottom:10px;font-size:13px;color:var(--mu)}
+.ov{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.ov form{background:var(--card);border-radius:16px;padding:18px;width:100%;max-width:420px;max-height:90vh;overflow:auto}
+.er{color:var(--er)}
+.chart{display:flex;gap:8px;align-items:flex-end;height:120px}.chart div{flex:1;text-align:center;font-size:11px;color:var(--mu)}.chart i{display:block;background:var(--pr);border-radius:6px 6px 0 0;min-height:2px}
+.timer{font-size:64px;font-weight:700;text-align:center;color:var(--pr);margin:10px 0}
+.toast{position:fixed;bottom:80px;inset-inline:0;margin:auto;width:max-content;max-width:90%;background:var(--ok);color:#fff;padding:8px 16px;border-radius:10px;z-index:99}
+body.focus nav{display:none}body.focus main>:not(#tmwrap){display:none}
+@media(max-width:760px){#app{flex-direction:column}nav{position:fixed;bottom:0;top:auto;inset-inline:0;width:100%;height:auto;flex-direction:row;border-inline-end:0;border-top:1px solid var(--bd);padding:4px;z-index:5;justify-content:space-around}
+nav h1{display:none}nav button{flex-direction:column;gap:0;font-size:10px;padding:4px 2px;flex:1;align-items:center}main{padding:14px 14px 90px}}
+</style>
+</head>
+<body>
+<div id="app"><nav id="nav"></nav><main id="main"></main></div>
+<script>
+const $=s=>document.querySelector(s);
+const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ld=d=>{d=new Date(d);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const add=n=>{const d=new Date();d.setDate(d.getDate()+n);return ld(d)};
+const today=()=>ld(new Date());
+const uid=()=>Math.random().toString(36).slice(2,9);
+const blank=()=>({name:'',subjects:[],tasks:[],exams:[],sessions:[]});
+let S;try{S=JSON.parse(localStorage.getItem('sn'))||blank()}catch(x){S=blank()}
+const save=()=>{try{localStorage.setItem('sn',JSON.stringify(S))}catch(x){}};
+let page='home',sub=null;
+const pages=[['home','الرئيسية','🏠'],['subjects','المواد','📚'],['tasks','المهام','✅'],['exams','الامتحانات','📝'],['plan','الجدول','🗓️'],['timer','المؤقت','⏱️'],['stats','التقدم','📊']];
+const COL=['#5b5bd6','#0ea5e9','#16a34a','#d97706','#dc2626','#9333ea','#db2777'];
+const PR={low:'منخفضة',mid:'متوسطة',high:'عالية'},ST={todo:'لم تبدأ',doing:'قيد التنفيذ',done:'مكتملة'},TY={monthly:'شهري',final:'نهائي',mock:'تجريبي',quiz:'اختبار قصير'};
+const sj=id=>S.subjects.find(s=>s.id==id);
+const sname=id=>sj(id)?.name||'—';
+const prog=s=>{const l=s.lessons||[];return l.length?Math.round(l.filter(x=>x.d).length*100/l.length):0};
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),1800)}
+function modal(title,fields,val,cb){
+  const o=document.createElement('div');o.className='ov';
+  const f=document.createElement('form');
+  f.innerHTML='<h3>'+e(title)+'</h3>'+fields.map(x=>{
+    let v=val[x.k]??x.def??'',i;
+    if(x.t=='select')i='<select name="'+x.k+'">'+x.o.map(a=>'<option value="'+e(a[0])+'"'+(a[0]==v?' selected':'')+'>'+e(a[1])+'</option>').join('')+'</select>';
+    else if(x.t=='textarea')i='<textarea name="'+x.k+'" rows="3">'+e(v)+'</textarea>';
+    else i='<input name="'+x.k+'" type="'+(x.t||'text')+'" value="'+e(v)+'"'+(x.t=='range'?' min="0" max="100"':'')+(x.t=='number'?' min="1"':'')+'>';
+    return '<label>'+x.l+i+'</label>'}).join('')+'<div class="er" id="er"></div><div class="row"><button class="btn">حفظ</button><button type="button" class="btn s" id="cx">إلغاء</button></div>';
+  f.onsubmit=ev=>{ev.preventDefault();const r={};for(const x of fields){let v=f.elements[x.k].value.trim();if(x.req&&!v){f.querySelector('#er').textContent='يرجى ملء: '+x.l;return}if(x.t=='number'||x.t=='range')v=+v;r[x.k]=v}
+    const m=cb(r);if(m){f.querySelector('#er').textContent=m;return}o.remove();save();render();toast('تم الحفظ ✓')};
+  f.querySelector('#cx').onclick=()=>o.remove();
+  o.append(f);document.body.append(o);
+}
+const needSub=()=>{if(!S.subjects.length){toast('أضف مادة أولًا');go('subjects');return true}};
+const subOpts=()=>S.subjects.map(s=>[s.id,s.name]);
+function go(p,id){page=p;sub=id||null;render()}
+function nav(){$('#nav').innerHTML='<h1>🎓 StudyNova</h1>'+pages.map(p=>'<button class="'+(page==p[0]||(page=='sd'&&p[0]=='subjects')?'on':'')+'" onclick="go(\''+p[0]+'\')"><span>'+p[2]+'</span><span>'+p[1]+'</span></button>').join('')}
+function empty(i,t,b){return '<div class="c empty"><b>'+i+'</b>'+t+'<div style="margin-top:10px">'+(b||'')+'</div></div>'}
+/* ---- subjects ---- */
+function subjForm(id){const s=id?sj(id):{};modal(id?'تعديل مادة':'مادة جديدة',[{k:'name',l:'اسم المادة',req:1},{k:'teacher',l:'المدرس (اختياري)'},{k:'color',l:'اللون',t:'select',o:COL.map(c=>[c,c])}],s,r=>{if(id)Object.assign(s,r);else S.subjects.push({id:uid(),lessons:[],...r})})}
+function delSub(id){if(!confirm('حذف المادة وكل مهامها وامتحاناتها وجلساتها؟'))return;S.subjects=S.subjects.filter(s=>s.id!=id);['tasks','exams','sessions'].forEach(k=>S[k]=S[k].filter(x=>x.sid!=id));save();go('subjects')}
+let q='';
+function vSubjects(){
+  const l=S.subjects.filter(s=>s.name.includes(q));
+  return '<div class="row sp"><h2>المواد الدراسية</h2><button class="btn" onclick="subjForm()">+ مادة</button></div><input placeholder="🔍 ابحث عن مادة" value="'+e(q)+'" oninput="q=this.value;render(1)" style="margin-bottom:12px">'+
+  (l.length?'<div class="g">'+l.map(s=>{const ex=S.exams.filter(x=>x.sid==s.id&&x.at>=new Date().toISOString().slice(0,16)).sort((a,b)=>a.at>b.at?1:-1)[0];
+   return '<div class="c"><div class="row sp"><b onclick="go(\'sd\',\''+s.id+'\')" style="cursor:pointer"><span class="dot" style="background:'+s.color+'"></span> '+e(s.name)+'</b>'+(s.demo?'<span class="tag demo">تجريبي</span>':'')+'</div><div class="mu">'+e(s.teacher||'')+'</div><div class="mu">'+(s.lessons||[]).filter(x=>x.d).length+' / '+(s.lessons||[]).length+' درس</div><div class="bar"><i style="width:'+prog(s)+'%;background:'+s.color+'"></i></div><div class="mu">'+(ex?'الامتحان: '+ex.at.slice(0,10):'لا يوجد امتحان قادم')+'</div><div class="row" style="margin-top:8px"><button class="btn sm" onclick="go(\'sd\',\''+s.id+'\')">فتح</button><button class="btn sm s" onclick="subjForm(\''+s.id+'\')">تعديل</button><button class="btn sm d" onclick="delSub(\''+s.id+'\')">حذف</button></div></div>'}).join('')+'</div>':empty('📚','لا توجد مواد بعد','<button class="btn" onclick="subjForm()">أضف أول مادة</button>'))}
+function vSD(){const s=sj(sub);if(!s)return vSubjects();
+  const t=S.tasks.filter(x=>x.sid==s.id),x=S.exams.filter(y=>y.sid==s.id);
+  return '<button class="btn s sm" onclick="go(\'subjects\')">→ رجوع</button><h2 style="margin-top:10px"><span class="dot" style="background:'+s.color+'"></span> '+e(s.name)+'</h2><div class="bar"><i style="width:'+prog(s)+'%"></i></div><p class="mu">التقدم '+prog(s)+'%</p>'+
+  '<div class="c"><div class="row sp"><h3>الدروس</h3><button class="btn sm" onclick="addLesson(\''+s.id+'\')">+ درس</button></div>'+(s.lessons.length?s.lessons.map((l,i)=>'<div class="row sp" style="padding:4px 0"><label style="margin:0;display:flex;gap:8px;align-items:center;color:var(--tx)"><input type="checkbox" style="width:auto" '+(l.d?'checked':'')+' onchange="togL(\''+s.id+'\','+i+')"> '+e(l.t)+'</label><button class="btn sm d" onclick="delL(\''+s.id+'\','+i+')">×</button></div>').join(''):'<div class="mu">لا دروس بعد</div>')+'</div>'+
+  '<h3 style="margin-top:14px">المهام</h3>'+(t.length?t.map(taskRow).join(''):'<div class="mu">لا مهام</div>')+'<h3 style="margin-top:14px">الامتحانات</h3>'+(x.length?x.map(examCard).join(''):'<div class="mu">لا امتحانات</div>')}
+function addLesson(id){modal('درس جديد',[{k:'t',l:'عنوان الدرس',req:1}],{},r=>{sj(id).lessons.push({t:r.t,d:0})})}
+function togL(id,i){const l=sj(id).lessons[i];l.d=l.d?0:1;save();render()}
+function delL(id,i){sj(id).lessons.splice(i,1);save();render()}
+/* ---- tasks ---- */
+let tf={sid:'',pr:'',st:''};
+function taskForm(id){if(needSub())return;const t=id?S.tasks.find(x=>x.id==id):{};modal(id?'تعديل مهمة':'مهمة جديدة',[{k:'title',l:'العنوان',req:1},{k:'sid',l:'المادة',t:'select',o:subOpts()},{k:'desc',l:'وصف مختصر',t:'textarea'},{k:'due',l:'تاريخ الاستحقاق',t:'date',req:1,def:add(1)},{k:'pr',l:'الأولوية',t:'select',o:Object.entries(PR),def:'mid'},{k:'st',l:'الحالة',t:'select',o:Object.entries(ST),def:'todo'},{k:'est',l:'الوقت المتوقع (دقيقة)',t:'number',def:30}],t,r=>{if(id)Object.assign(t,r);else S.tasks.push({id:uid(),...r})})}
+function togT(id){const t=S.tasks.find(x=>x.id==id);t.st=t.st=='done'?'todo':'done';save();render()}
+function delT(id){S.tasks=S.tasks.filter(x=>x.id!=id);save();render()}
+function taskRow(t){const late=t.st!='done'&&t.due<today();
+  return '<div class="c row sp" style="margin-bottom:8px"><div class="row"><input type="checkbox" style="width:auto" '+(t.st=='done'?'checked':'')+' onchange="togT(\''+t.id+'\')"><div><b style="'+(t.st=='done'?'text-decoration:line-through':'')+'">'+e(t.title)+'</b> '+(t.demo?'<span class="tag demo">تجريبي</span>':'')+'<div class="mu">'+e(sname(t.sid))+' · '+t.due+' · '+t.est+' د</div></div></div><div class="row"><span class="tag '+(t.pr=='high'?'er':t.pr=='mid'?'wa':'')+'">'+PR[t.pr]+'</span><span class="tag '+(late?'er':t.st=='done'?'ok':'')+'">'+(late?'متأخرة':ST[t.st])+'</span><button class="btn sm s" onclick="taskForm(\''+t.id+'\')">✎</button><button class="btn sm d" onclick="delT(\''+t.id+'\')">×</button></div></div>'}
+function vTasks(){
+  let l=S.tasks.filter(t=>(!tf.sid||t.sid==tf.sid)&&(!tf.pr||t.pr==tf.pr)&&(!tf.st||t.st==tf.st)).sort((a,b)=>a.due>b.due?1:-1);
+  const sel=(k,o,ph)=>'<select onchange="tf.'+k+'=this.value;render(1)"><option value="">'+ph+'</option>'+o.map(a=>'<option value="'+e(a[0])+'"'+(tf[k]==a[0]?' selected':'')+'>'+e(a[1])+'</option>').join('')+'</select>';
+  const done=S.tasks.filter(t=>t.st=='done').length;
+  return '<div class="row sp"><h2>المهام</h2><button class="btn" onclick="taskForm()">+ مهمة</button></div>'+(S.tasks.length?'<div class="mu">الإنجاز: '+done+' من '+S.tasks.length+'</div><div class="bar" style="margin:6px 0 12px"><i style="width:'+Math.round(done*100/S.tasks.length)+'%"></i></div>':'')+
+  '<div class="g" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px">'+sel('sid',subOpts(),'كل المواد')+sel('pr',Object.entries(PR),'كل الأولويات')+sel('st',Object.entries(ST),'كل الحالات')+'</div>'+(l.length?l.map(taskRow).join(''):empty('✅','لا توجد مهام مطابقة','<button class="btn" onclick="taskForm()">أضف مهمة</button>'))}
+/* ---- exams ---- */
+function examForm(id){if(needSub())return;const x=id?S.exams.find(y=>y.id==id):{};modal(id?'تعديل امتحان':'امتحان جديد',[{k:'title',l:'اسم الامتحان',req:1},{k:'sid',l:'المادة',t:'select',o:subOpts()},{k:'at',l:'التاريخ والوقت',t:'datetime-local',req:1},{k:'type',l:'النوع',t:'select',o:Object.entries(TY),def:'monthly'},{k:'loc',l:'المكان (اختياري)'},{k:'topics',l:'الموضوعات (كل موضوع في سطر)',t:'textarea'},{k:'ready',l:'مستوى الاستعداد %',t:'range',def:0},{k:'notes',l:'ملاحظات',t:'textarea'}],x,r=>{if(id)Object.assign(x,r);else S.exams.push({id:uid(),...r})})}
+function delE(id){S.exams=S.exams.filter(x=>x.id!=id);save();render()}
+function cd(at){const ms=new Date(at)-new Date();if(ms<0)return 'انتهى';const h=Math.floor(ms/36e5);return Math.floor(h/24)+' يوم و '+h%24+' ساعة'}
+function examCard(x){const col=sj(x.sid)?.color||'#5b5bd6';
+  return '<div class="c" style="margin-bottom:8px;border-inline-start:4px solid '+col+'"><div class="row sp"><b>'+e(x.title)+' '+(x.demo?'<span class="tag demo">تجريبي</span>':'')+'</b><span class="tag '+(new Date(x.at)<new Date()?'':'wa')+'">⏳ '+cd(x.at)+'</span></div><div class="mu">'+e(sname(x.sid))+' · '+TY[x.type]+' · '+x.at.replace('T',' ')+(x.loc?' · '+e(x.loc):'')+'</div><div class="mu">الاستعداد '+x.ready+'%</div><div class="bar"><i style="width:'+x.ready+'%"></i></div>'+
+  (x.topics?'<div class="mu" style="margin-top:6px">الموضوعات: '+e(x.topics).replace(/\n/g,'، ')+'</div>':'')+(x.notes?'<div class="mu">📌 '+e(x.notes)+'</div>':'')+
+  '<div class="row" style="margin-top:8px"><button class="btn sm" onclick="revPlan(\''+x.id+'\')">خطة المراجعة</button><button class="btn sm s" onclick="examForm(\''+x.id+'\')">تعديل</button><button class="btn sm d" onclick="delE(\''+x.id+'\')">حذف</button></div></div>'}
+function revPlan(id){const x=S.exams.find(y=>y.id==id);const tp=(x.topics||'').split('\n').map(s=>s.trim()).filter(Boolean);
+  const days=Math.ceil((new Date(x.at)-new Date())/864e5);
+  if(days<1){toast('الامتحان اليوم أو انتهى');return}if(!tp.length){toast('أضف موضوعات الامتحان أولًا');return}
+  const o=document.createElement('div');o.className='ov';const f=document.createElement('form');
+  const rv=Math.min(days,tp.length>days?days:days);const study=Math.max(1,days-1);
+  let h='<h3>خطة مراجعة مقترحة: '+e(x.title)+'</h3><p class="mu">اقتراح قابل للتعديل وليس ضمانًا للنتيجة. متبقي '+days+' يوم.</p>';
+  for(let d=0;d<days;d++){const last=d==days-1;const t=last?'مراجعة نهائية + حل نماذج':tp.slice(Math.floor(d*tp.length/study),Math.max(Math.floor(d*tp.length/study)+1,Math.floor((d+1)*tp.length/study))).join('، ');h+='<div class="c" style="margin-bottom:6px"><b>'+add(d)+'</b><div class="mu">'+e(t)+'</div></div>'}
+  f.innerHTML=h+'<div class="row"><button class="btn" id="ap">إضافة كجلسات للجدول</button><button type="button" class="btn s" id="cx">إغلاق</button></div>';
+  f.onsubmit=ev=>{ev.preventDefault();for(let d=0;d<days;d++)S.sessions.push({id:uid(),sid:x.sid,date:add(d),start:'17:00',end:'18:00',min:0,done:0,note:'مراجعة: '+x.title});o.remove();save();go('plan');toast('أُضيفت الجلسات')};
+  f.querySelector('#cx').onclick=()=>o.remove();o.append(f);document.body.append(o)}
+function vExams(){const l=[...S.exams].sort((a,b)=>a.at>b.at?1:-1);
+  return '<div class="row sp"><h2>الامتحانات</h2><button class="btn" onclick="examForm()">+ امتحان</button></div>'+(l.length?l.map(examCard).join(''):empty('📝','لا توجد امتحانات مسجلة','<button class="btn" onclick="examForm()">أضف امتحانًا</button>'))}
+/* ---- schedule ---- */
+function sessForm(){if(needSub())return;modal('جلسة مذاكرة',[{k:'sid',l:'المادة',t:'select',o:subOpts()},{k:'date',l:'التاريخ',t:'date',req:1,def:today()},{k:'start',l:'البداية',t:'time',req:1,def:'17:00'},{k:'end',l:'النهاية',t:'time',req:1,def:'18:00'},{k:'rep',l:'التكرار',t:'select',o:[['0','بدون تكرار'],['7','أسبوعيًا (4 مرات)'],['1','يوميًا (7 أيام)']]}],{},r=>{if(r.end<=r.start)return 'وقت النهاية يجب أن يكون بعد البداية';const n=r.rep=='7'?4:r.rep=='1'?7:1,st=+r.rep||1;for(let i=0;i<n;i++){const d=new Date(r.date);d.setDate(d.getDate()+i*st);S.sessions.push({id:uid(),sid:r.sid,date:ld(d),start:r.start,end:r.end,min:0,done:0})}})}
+function togS(id){const s=S.sessions.find(x=>x.id==id);s.done=s.done?0:1;if(s.done&&!s.min){const a=s.start.split(':'),b=s.end.split(':');s.min=(b[0]*60+ +b[1])-(a[0]*60+ +a[1])}if(!s.done)s.min=0;save();render()}
+function delS(id){S.sessions=S.sessions.filter(x=>x.id!=id);save();render()}
+let pv='week';
+function sessRow(s){const late=!s.done&&s.date<today();return '<div class="c row sp" style="margin-bottom:6px"><div><b><span class="dot" style="background:'+(sj(s.sid)?.color||'#999')+'"></span> '+e(sname(s.sid))+'</b><div class="mu">'+s.date+' · '+s.start+'–'+s.end+(s.min&&s.done?' · الفعلي '+s.min+' د':'')+'</div></div><div class="row"><span class="tag '+(s.done?'ok':late?'er':'wa')+'">'+(s.done?'مكتملة':late?'متأخرة':'قادمة')+'</span><button class="btn sm s" onclick="togS(\''+s.id+'\')">'+(s.done?'تراجع':'تم ✓')+'</button><button class="btn sm" onclick="startFor(\''+s.sid+'\')">ابدأ</button><button class="btn sm d" onclick="delS(\''+s.id+'\')">×</button></div></div>'}
+function vPlan(){const t=today(),end=pv=='day'?t:pv=='week'?add(6):add(29);
+  const l=S.sessions.filter(s=>s.date<=end&&(s.date>=t||!s.done)).sort((a,b)=>(a.date+a.start)>(b.date+b.start)?1:-1);
+  return '<div class="row sp"><h2>جدول المذاكرة</h2><button class="btn" onclick="sessForm()">+ جلسة</button></div><div class="row" style="margin-bottom:10px">'+[['day','يومي'],['week','أسبوعي'],['month','شهري']].map(p=>'<button class="btn sm '+(pv==p[0]?'':'s')+'" onclick="pv=\''+p[0]+'\';render()">'+p[1]+'</button>').join('')+'</div>'+(l.length?l.map(sessRow).join(''):empty('🗓️','لا جلسات في هذه الفترة','<button class="btn" onclick="sessForm()">أضف جلسة</button>'))}
+/* ---- timer ---- */
+const T={mode:'focus',left:1500,run:0,iv:0,el:0,sid:'',f:25,b:5,n:0};
+function startFor(sid){T.sid=sid;go('timer')}
+const fmt=n=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
+function tick(){T.left--;if(T.mode=='focus')T.el++;if(T.left<=0){beep();if(T.mode=='focus'){logT();T.n++;T.mode='break';T.left=(T.n%4?T.b:T.b*3)*60}else{T.mode='focus';T.left=T.f*60}}draw()}
+function beep(){try{const a=new AudioContext(),o=a.createOscillator();o.connect(a.destination);o.start();setTimeout(()=>o.stop(),300)}catch(x){}toast(T.mode=='focus'?'انتهت جلسة التركيز 🎉':'انتهت الاستراحة')}
+function logT(){if(T.el<10||!T.sid){T.el=0;return}S.sessions.push({id:uid(),sid:T.sid,date:today(),start:'',end:'',min:Math.max(1,Math.round(T.el/60)),done:1,note:'مؤقت'});T.el=0;save()}
+function tToggle(){if(!T.sid){toast('اختر المادة أولًا');return}if(T.run){clearInterval(T.iv);T.run=0}else{T.iv=setInterval(tick,1000);T.run=1}render(1)}
+function tFinish(){clearInterval(T.iv);T.run=0;const m=Math.round(T.el/60);logT();T.mode='focus';T.left=T.f*60;toast(m?'سُجّل '+m+' دقيقة':'لم يُسجَّل وقت');render()}
+function tSet(){T.f=+$('#tf').value||25;T.b=+$('#tb').value||5;if(!T.run){T.mode='focus';T.left=T.f*60}render(1)}
+function draw(){const t=$('#tm');if(t){t.textContent=fmt(T.left);$('#tn').textContent=T.n;$('#te').textContent=Math.round(T.el/60)}}
+function vTimer(){return '<div id="tmwrap"><h2>مؤقت التركيز</h2><div class="c" style="max-width:480px;margin:auto"><div class="mu" style="text-align:center">'+(T.mode=='focus'?'🎯 تركيز':'☕ استراحة')+'</div><div class="timer" id="tm">'+fmt(T.left)+'</div>'+
+  '<label>المادة<select onchange="T.sid=this.value"><option value="">اختر المادة</option>'+S.subjects.map(s=>'<option value="'+s.id+'"'+(T.sid==s.id?' selected':'')+'>'+e(s.name)+'</option>').join('')+'</select></label>'+
+  '<div class="row" style="justify-content:center"><button class="btn" onclick="tToggle()">'+(T.run?'إيقاف مؤقت':T.el||T.left<T.f*60?'استكمال':'ابدأ')+'</button><button class="btn s" onclick="tFinish()">إنهاء وتسجيل</button><button class="btn s" onclick="document.body.classList.toggle(\'focus\')">وضع التركيز</button></div>'+
+  '<div class="row" style="margin-top:12px"><label style="flex:1">تركيز (د)<input id="tf" type="number" min="1" value="'+T.f+'" onchange="tSet()"></label><label style="flex:1">راحة (د)<input id="tb" type="number" min="1" value="'+T.b+'" onchange="tSet()"></label></div>'+
+  '<div class="mu" style="text-align:center">جلسات مكتملة: <b id="tn">'+T.n+'</b> · دقائق الجلسة الحالية: <b id="te">'+Math.round(T.el/60)+'</b></div></div></div>'}
+/* ---- stats ---- */
+function vStats(){const d=S.sessions.filter(s=>s.done);const tot=d.reduce((a,s)=>a+s.min,0);const done=S.tasks.filter(t=>t.st=='done').length;
+  const days=[...Array(7)].map((_,i)=>{const k=add(i-6);return[k,d.filter(s=>s.date==k).reduce((a,s)=>a+s.min,0)]});const mx=Math.max(1,...days.map(x=>x[1]));
+  const per=S.subjects.map(s=>({s,m:d.filter(x=>x.sid==s.id).reduce((a,x)=>a+x.min,0)}));
+  const need=[...per].sort((a,b)=>a.m-b.m).slice(0,3);
+  if(!S.subjects.length)return '<h2>التقدم</h2>'+empty('📊','أضف مواد وجلسات لتظهر الإحصائيات');
+  return '<h2>الإحصائيات والتقدم</h2><div class="g"><div class="c"><div class="mu">إجمالي ساعات المذاكرة</div><div class="big">'+(tot/60).toFixed(1)+'</div></div><div class="c"><div class="mu">جلسات مكتملة</div><div class="big">'+d.length+'</div></div><div class="c"><div class="mu">إنجاز المهام</div><div class="big">'+(S.tasks.length?Math.round(done*100/S.tasks.length):0)+'%</div></div><div class="c"><div class="mu">امتحانات قادمة / منتهية</div><div class="big">'+S.exams.filter(x=>new Date(x.at)>=new Date()).length+' / '+S.exams.filter(x=>new Date(x.at)<new Date()).length+'</div></div></div>'+
+  '<div class="c" style="margin-top:12px"><h3>دقائق المذاكرة آخر 7 أيام</h3><div class="chart">'+days.map(x=>'<div><i style="height:'+Math.round(x[1]*90/mx)+'px"></i>'+x[1]+'<br>'+x[0].slice(5)+'</div>').join('')+'</div></div>'+
+  '<div class="c" style="margin-top:12px"><h3>إنجاز المواد</h3>'+per.map(p=>'<div class="row sp"><span>'+e(p.s.name)+'</span><span class="mu">'+prog(p.s)+'% · '+p.m+' د</span></div><div class="bar" style="margin-bottom:8px"><i style="width:'+prog(p.s)+'%;background:'+p.s.color+'"></i></div>').join('')+'</div>'+
+  '<div class="c" style="margin-top:12px"><h3>مواد تحتاج وقتًا أكثر</h3>'+need.map(p=>'<div>'+e(p.s.name)+' <span class="mu">('+p.m+' د)</span></div>').join('')+'</div>'}
+/* ---- home ---- */
+const Q=['ابدأ ولو بخطوة صغيرة.','الاستمرار أهم من المثالية.','مذاكرة اليوم تريحك غدًا.','ركّز على التقدم لا الكمال.','كل جلسة تقرّبك من هدفك.'];
+const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+function setName(){modal('اسمك',[{k:'n',l:'الاسم',req:1}],{n:S.name},r=>{S.name=r.n})}
+function demo(){const c=(n,t,l)=>({id:uid(),name:n,teacher:t,color:l,demo:1,lessons:[]});
+  const m=c('الرياضيات','أ. أحمد',COL[0]),p=c('الفيزياء','أ. منى',COL[1]),a=c('اللغة العربية','أ. سامي',COL[2]);
+  m.lessons=['التفاضل','التكامل','المصفوفات','الاحتمالات'].map((t,i)=>({t,d:i<2?1:0}));p.lessons=['الحركة','القوى','الشغل والطاقة'].map((t,i)=>({t,d:i<1?1:0}));a.lessons=['النحو','البلاغة','الأدب'].map(t=>({t,d:0}));
+  S.subjects.push(m,p,a);
+  S.tasks.push({id:uid(),demo:1,title:'حل واجب التفاضل',sid:m.id,desc:'',due:today(),pr:'high',st:'doing',est:45},{id:uid(),demo:1,title:'مراجعة قوانين الحركة',sid:p.id,desc:'',due:add(2),pr:'mid',st:'todo',est:30},{id:uid(),demo:1,title:'تلخيص درس البلاغة',sid:a.id,desc:'',due:add(-1),pr:'low',st:'todo',est:20});
+  S.exams.push({id:uid(),demo:1,title:'امتحان شهري رياضيات',sid:m.id,at:add(6)+'T09:00',type:'monthly',loc:'قاعة 3',topics:'التفاضل\nالتكامل\nالمصفوفات',ready:40,notes:''},{id:uid(),demo:1,title:'اختبار قصير فيزياء',sid:p.id,at:add(3)+'T11:00',type:'quiz',loc:'',topics:'الحركة\nالقوى',ready:60,notes:''});
+  S.sessions.push({id:uid(),demo:1,sid:m.id,date:today(),start:'17:00',end:'18:00',min:0,done:0},{id:uid(),demo:1,sid:p.id,date:add(1),start:'16:00',end:'17:00',min:0,done:0},{id:uid(),demo:1,sid:m.id,date:add(-1),start:'18:00',end:'19:00',min:60,done:1},{id:uid(),demo:1,sid:a.id,date:add(-2),start:'18:00',end:'18:45',min:45,done:1});
+  save();render();toast('أُضيفت بيانات تجريبية')}
+function clearDemo(){const ds=S.subjects.filter(s=>s.demo).map(s=>s.id);S.subjects=S.subjects.filter(s=>!s.demo);['tasks','exams','sessions'].forEach(k=>S[k]=S[k].filter(x=>!x.demo&&!ds.includes(x.sid)));save();render();toast('حُذفت البيانات التجريبية')}
+function vHome(){const t=today(),dn=new Date();
+  const todayT=S.tasks.filter(x=>x.due==t&&x.st!='done'),open=S.tasks.filter(x=>x.st!='done');
+  const nx=S.exams.filter(x=>new Date(x.at)>=dn).sort((a,b)=>a.at>b.at?1:-1)[0];
+  const wk=S.sessions.filter(s=>s.date>=add(-dn.getDay())&&s.date<=add(6-dn.getDay()));const wd=wk.filter(s=>s.done).length;
+  const mins=S.sessions.filter(s=>s.done&&s.date==t).reduce((a,s)=>a+s.min,0),goal=120;
+  const up=S.sessions.filter(s=>!s.done&&s.date>=t).sort((a,b)=>(a.date+a.start)>(b.date+b.start)?1:-1).slice(0,3);
+  const urg=open.filter(x=>x.pr=='high'||x.due<t).sort((a,b)=>a.due>b.due?1:-1).slice(0,3);
+  const hasD=S.subjects.some(s=>s.demo);
+  return '<div class="row sp"><div><h2 style="margin:0">أهلًا '+e(S.name||'يا طالب')+' 👋 <button class="btn sm s" onclick="setName()">✎</button></h2><div class="mu">'+DAYS[dn.getDay()]+' · '+t+'</div></div><div class="row"><button class="btn sm" onclick="subjForm()">+ مادة</button><button class="btn sm" onclick="taskForm()">+ مهمة</button><button class="btn sm" onclick="examForm()">+ امتحان</button></div></div>'+
+  '<div class="c" style="margin:12px 0;background:var(--pr2)">💡 '+Q[dn.getDate()%Q.length]+'</div>'+
+  '<div class="g"><div class="c"><div class="mu">المواد</div><div class="big">'+S.subjects.length+'</div></div><div class="c"><div class="mu">مهام اليوم</div><div class="big">'+todayT.length+'</div></div><div class="c"><div class="mu">أقرب امتحان</div><div class="big" style="font-size:18px">'+(nx?cd(nx.at):'—')+'</div><div class="mu">'+(nx?e(nx.title):'لا يوجد')+'</div></div><div class="c"><div class="mu">خطة الأسبوع</div><div class="big">'+(wk.length?Math.round(wd*100/wk.length):0)+'%</div></div></div>'+
+  '<div class="c" style="margin-top:12px"><div class="row sp"><b>التقدم اليومي</b><span class="mu">'+mins+' / '+goal+' دقيقة</span></div><div class="bar" style="margin-top:6px"><i style="width:'+Math.min(100,mins*100/goal)+'%"></i></div></div>'+
+  '<div class="g" style="margin-top:12px"><div><h3>جلسات قادمة</h3>'+(up.length?up.map(sessRow).join(''):'<div class="c mu">لا جلسات قادمة</div>')+'</div><div><h3>مهام عاجلة</h3>'+(urg.length?urg.map(taskRow).join(''):'<div class="c mu">لا مهام عاجلة 🎉</div>')+'</div></div>'+
+  '<div class="row" style="margin-top:16px">'+(hasD?'<button class="btn d sm" onclick="clearDemo()">حذف البيانات التجريبية</button>':'<button class="btn s sm" onclick="demo()">تحميل بيانات تجريبية</button>')+'</div>'}
+/* ---- render ---- */
+function render(keep){nav();const m={home:vHome,subjects:vSubjects,sd:vSD,tasks:vTasks,exams:vExams,plan:vPlan,timer:vTimer,stats:vStats};
+  const a=document.activeElement,id=keep&&a&&a.tagName=='INPUT'&&a.type!='number'?a.getAttribute('placeholder'):null;
+  $('#main').innerHTML=m[page]();if(id){const n=document.querySelector('input[placeholder="'+id+'"]');if(n){n.focus();n.setSelectionRange(99,99)}}}
+render();
+</script>
+</body>
+</html>
